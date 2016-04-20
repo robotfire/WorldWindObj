@@ -69,7 +69,9 @@ public class ObjLoader {
                         newline = newline.substring(2, newline.length());
                         StringTokenizer st = new StringTokenizer(newline, " ");
                         for (int i = 0; st.hasMoreTokens(); i++) {
-                            coords[i] = Float.parseFloat(st.nextToken());
+                            String tk = st.nextToken();
+                            if (tk.equals("\\")) tk = br.readLine();
+                            coords[i] = Float.parseFloat(tk);
                         }
                         if (firstpass) {
                             rightpoint = coords[0];
@@ -93,7 +95,9 @@ public class ObjLoader {
                         newline = newline.substring(3, newline.length());
                         StringTokenizer st = new StringTokenizer(newline, " ");
                         for (int i = 0; st.hasMoreTokens(); i++) {
-                            coords[i] = Float.parseFloat(st.nextToken());
+                            String tk = st.nextToken();
+                            if (tk.equals("\\")) tk = br.readLine();
+                            coords[i] = Float.parseFloat(tk);
                         }
                         vertexSetsTexs.add(coords);
                     } else //Loads vertex normals coordinates
@@ -102,7 +106,9 @@ public class ObjLoader {
                         newline = newline.substring(3, newline.length());
                         StringTokenizer st = new StringTokenizer(newline, " ");
                         for (int i = 0; st.hasMoreTokens(); i++) {
-                            coords[i] = Float.parseFloat(st.nextToken());
+                            String tk = st.nextToken();
+                            if (tk.equals("\\")) tk = br.readLine();
+                            coords[i] = Float.parseFloat(tk);
                         }
                         vertexSetsNorms.add(coords);
                     } else if (newline.startsWith("f ")) { //Loads face coordinates
