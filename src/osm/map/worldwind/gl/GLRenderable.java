@@ -109,6 +109,7 @@ public abstract class GLRenderable implements Renderable {
                 | GL2.GL_CLIENT_VERTEX_ARRAY_BIT);
 
         if (useLighting) {
+            gl.glEnable(GL2.GL_CULL_FACE);
             gl.glEnable(GL2.GL_SMOOTH);
             gl.glEnable(GL2.GL_LIGHTING);
             gl.glLightModeli(GL2.GL_LIGHT_MODEL_LOCAL_VIEWER, GL2.GL_TRUE);
