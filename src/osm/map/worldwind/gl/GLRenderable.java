@@ -1,5 +1,6 @@
 package osm.map.worldwind.gl;
 
+import com.jogamp.opengl.GL2;
 import gov.nasa.worldwind.geom.Angle;
 import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.geom.Vec4;
@@ -8,7 +9,6 @@ import gov.nasa.worldwind.render.DrawContext;
 import gov.nasa.worldwind.render.OrderedRenderable;
 import gov.nasa.worldwind.render.Renderable;
 import java.awt.Point;
-import javax.media.opengl.GL2;
 
 public abstract class GLRenderable implements Renderable {
 

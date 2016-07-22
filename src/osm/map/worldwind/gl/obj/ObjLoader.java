@@ -1,5 +1,6 @@
 package osm.map.worldwind.gl.obj;
 
+import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureIO;
 import java.io.*;
@@ -9,18 +10,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-import javax.media.opengl.GL2;
 import osm.map.worldwind.gl.obj.MtlLoader.Material;
 
 public class ObjLoader {
 
-    List<float[]> vertexSets = new ArrayList<float[]>();
-    List<float[]> vertexSetsNorms = new ArrayList<float[]>();
-    List<float[]> vertexSetsTexs = new ArrayList<float[]>();
-    List<Face> faces = new ArrayList<Face>();
+    List<float[]> vertexSets = new ArrayList<>();
+    List<float[]> vertexSetsNorms = new ArrayList<>();
+    List<float[]> vertexSetsTexs = new ArrayList<>();
+    List<Face> faces = new ArrayList<>();
     int objectlist;
     float toppoint, bottompoint, leftpoint, rightpoint, farpoint, nearpoint;
-    Map<String, Texture> textureCache = new HashMap<String, Texture>();
+    Map<String, Texture> textureCache = new HashMap<>();
 
     String basePath;
     boolean flipTextureVertically;
@@ -28,16 +28,16 @@ public class ObjLoader {
     public ObjLoader(String objPath, GL2 gl, boolean centered, boolean flipTextureVertically) {
         this.flipTextureVertically = flipTextureVertically;
         try {
-            basePath = new File(objPath).getParent().toString();
-            FileInputStream r_path1 = new FileInputStream(objPath);
-            BufferedReader b_read1 = new BufferedReader(new InputStreamReader(r_path1));
-            loadObject(b_read1);
-            if (centered) {
-                centerit();
-            }
-            opengldrawtolist(gl);
-            cleanup();
-            r_path1.close();
+            basePath = new File(objPath).getParent();
+			BufferedReader b_read1;
+			try (FileInputStream r_path1 = new FileInputStream(objPath)) {
+				b_read1 = new BufferedReader(new InputStreamReader(r_path1));
+				loadObject(b_read1);
+				if (centered) {
+					centerit();
+				}	opengldrawtolist(gl);
+				cleanup();
+			}
             b_read1.close();
 
         } catch (Exception e) {

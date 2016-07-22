@@ -1,12 +1,12 @@
 package osm.map.worldwind.gl.fire;
 
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureIO;
 import gov.nasa.worldwind.util.OGLUtil;
 import java.awt.Color;
 import java.util.ArrayList;
-import javax.media.opengl.GL;
-import javax.media.opengl.GL2;
 
 public class Fire {
     

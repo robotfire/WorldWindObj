@@ -1,16 +1,16 @@
 package osm.map.worldwind.gl.obj;
 
+import com.jogamp.opengl.GL2;
 import gov.nasa.worldwind.geom.Position;
 
 import gov.nasa.worldwind.render.DrawContext;
 import java.util.HashMap;
 import java.util.Map;
-import javax.media.opengl.GL2;
 import osm.map.worldwind.gl.GLRenderable;
 
 public class ObjRenderable extends GLRenderable {
 
-    static Map<String, ObjLoader> modelCache = new HashMap<String, ObjLoader>();
+    static Map<String, ObjLoader> modelCache = new HashMap<>();
     String modelSource;
     boolean centerit = false, flipTextureVertically = false;
 
