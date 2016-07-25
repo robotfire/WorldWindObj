@@ -1,6 +1,5 @@
 package osm.map.worldwind.gl;
 
-import com.jogamp.opengl.GL2;
 import gov.nasa.worldwind.geom.Angle;
 import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.geom.Vec4;
@@ -9,6 +8,7 @@ import gov.nasa.worldwind.render.DrawContext;
 import gov.nasa.worldwind.render.OrderedRenderable;
 import gov.nasa.worldwind.render.Renderable;
 import java.awt.Point;
+import javax.media.opengl.GL2;
 
 public abstract class GLRenderable implements Renderable {
 
@@ -78,6 +78,7 @@ public abstract class GLRenderable implements Renderable {
         }
         double localSize = this.computeSize(dc, loc);
 
+
         if (dc.getView().getFrustumInModelCoordinates().contains(loc)) {
             dc.getView().pushReferenceCenter(dc, loc);
             gl.glRotated(position.getLongitude().degrees, 0, 1, 0);
@@ -98,8 +99,8 @@ public abstract class GLRenderable implements Renderable {
         GL2 gl = dc.getGL().getGL2();
         gl.glPushAttrib(
                 GL2.GL_TEXTURE_BIT
-                | GL2.GL_COLOR_BUFFER_BIT
                 | GL2.GL_DEPTH_BUFFER_BIT
+                | GL2.GL_COLOR_BUFFER_BIT
                 | GL2.GL_HINT_BIT
                 | GL2.GL_POLYGON_BIT
                 | GL2.GL_ENABLE_BIT

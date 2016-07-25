@@ -89,6 +89,9 @@ public class MtlLoader {
                     if (newline.startsWith("Ns")) {
                         matset.Ns = getValue(newline);
                     }
+                    if (newline.startsWith("illum")) {
+                        matset.illum = getValue(newline);
+                    }
                     if (newline.startsWith("map_Kd")) { //texture image
                         String map_Kd = newline.trim().substring(newline.indexOf(" ")).trim();
                         if (!new File(map_Kd).isAbsolute()) {

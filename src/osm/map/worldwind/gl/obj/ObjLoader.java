@@ -1,6 +1,5 @@
 package osm.map.worldwind.gl.obj;
 
-import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureIO;
 import java.io.*;
@@ -10,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import javax.media.opengl.GL2;
 import osm.map.worldwind.gl.obj.MtlLoader.Material;
 
 public class ObjLoader {

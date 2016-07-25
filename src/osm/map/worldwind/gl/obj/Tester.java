@@ -3,6 +3,7 @@ package osm.map.worldwind.gl.obj;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.layers.*;
+import gov.nasa.worldwind.view.orbit.BasicOrbitView;
 import gov.nasa.worldwindx.examples.ApplicationTemplate;
 import static gov.nasa.worldwindx.examples.ApplicationTemplate.insertBeforeCompass;
 import java.awt.event.ActionEvent;
@@ -16,16 +17,22 @@ public class Tester extends ApplicationTemplate {
 		RenderableLayer layer;
 		Timer timer;
 //		double alt = 180;
-		double alt =270;
+		double alt =300;
 		private ObjRenderable renderable;
 
 		public AppFrame() {
 
-			String model550="C:/RaptorX/projects/models/djif550mitGoPro/model.dae";
+			//String model550="C:/RaptorX/projects/models/djif550mitGoPro/model.dae";
+			String model550="C:/RaptorX/projects/models/djif550mitGoPro/model/model.obj";
 			String model950="C:/RaptorX/projects/WorldWind-Ardor3D/ArdorModelLoader/models/obj/Hexa950modOBJ/Hexa950mod.obj";
 			String pitcher="C:/RaptorX/projects/WorldWind-Ardor3D/ArdorModelLoader/models/obj/pitcher.obj";
             String modelep3="C:/RaptorX/projects/models/ep3/ep3b.obj";
-			String copter = "C:/RaptorX/projects/models/copter/copter.obj";
+			//String copter = "C:/RaptorX/projects/models/copter/copter.obj";
+			String copter = "C:/RaptorX/projects/DpacsPlugin/resources/models/copter.obj";
+
+
+			String nimitz="C:/RaptorX/projects/models/digimation/NimitzCarrier.obj";
+//			String osprey="C:/RaptorX/projects/models/digimation/v22osprey.obj";
 //			String model950 = "C:/RaptorX/projects/models/Hexacopter Attack Drone/Hexa 950 mod 3DS/Hexa 950 mod.3DS";
 //			String model950 = "C:/RaptorX/projects/models/Hexacopter Attack Drone/3ds/hexa.3ds";
 
@@ -34,14 +41,28 @@ public class Tester extends ApplicationTemplate {
 			pos = Position.fromDegrees(35.77750,-120.80565,alt);
 
 //			this.renderable = new ObjRenderable(pos, model950, true, false);
-			this.renderable = new ObjRenderable(pos, copter, false, true);
+//			this.renderable = new ObjRenderable(pos, copter, false, true);
+			this.renderable = new ObjRenderable(pos, model550, false, false);
 //			this.renderable.setSize(100);
-			this.renderable.setSize(1);
+			this.renderable.setSize(100);
 //			this.renderable.setAzimuth(90);
+//			this.renderable.setRoll(90);
 			this.renderable.setKeepConstantSize(true);
 //			this.renderable.setElevation(-90);
+			this.renderable.setRenderDistance(50000);
 //            model.setYaw(55);
 			layer.addRenderable(this.renderable);
+			BasicOrbitView bv = (BasicOrbitView)this.getWwd().getView();
+
+			class MyBasicOrbitView extends BasicOrbitView {
+				public double computeNearClipDistance() {
+					return 1;
+				}
+			};
+
+			MyBasicOrbitView mybv = new MyBasicOrbitView();
+
+			this.getWwd().setView(mybv);
 			insertBeforeCompass(getWwd(), layer);
 
 			this.timer = new Timer(1000, new ActionListener() {
@@ -64,9 +85,11 @@ public class Tester extends ApplicationTemplate {
 		}
 
 		private void updatePosition() {
-//			pos = pos.add(Position.fromDegrees(.01, .01));
+//			pos = pos.add(Position.fromDegrees(.0001, .0001));
 //			model.setPosition(pos);
 			this.renderable.setPosition(pos);
+//			double yaw=this.renderable.getAzimuth();
+//			this.renderable.setAzimuth(yaw+=15);
 //			model.setYaw(model.getYaw()+45); // roll
 //			model.setRoll(model.getRoll()+45);
 //			model.setPitch(model.getPitch()+45);
