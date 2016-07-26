@@ -49,11 +49,6 @@ public class ObjRenderable extends GLRenderable {
 		getModel(dc).opengldraw(gl);
 	}
 
-//		final double meshSize = modelRenderable.getBoundingBox().getDiameter();
-//		final double currDist = dc.getView().getEyePoint().distanceTo3(dc.getGlobe().computePointFromPosition(position));
-//		final double unitPixel = dc.getView().computePixelSizeAtDistance(currDist);
-//		return Math.min(modelRenderable.getMaximumScale(), unitPixel * pixelSize / meshSize);
-
 	private double getPixelsPerMeter() {
 		int dpi = Toolkit.getDefaultToolkit().getScreenResolution();
 		return dpi/.0254;
