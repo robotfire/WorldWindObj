@@ -13,7 +13,6 @@ import javax.media.opengl.GL2;
 import osm.map.worldwind.gl.obj.MtlLoader.Material;
 
 public class ObjLoader {
-
     List<float[]> vertexSets = new ArrayList<>();
     List<float[]> vertexSetsNorms = new ArrayList<>();
     List<float[]> vertexSetsTexs = new ArrayList<>();
@@ -52,6 +51,8 @@ public class ObjLoader {
         vertexSetsTexs.clear();
         faces.clear();
     }
+
+
 
     private void loadObject(BufferedReader br) {
         String mtlID = null;
@@ -166,6 +167,11 @@ public class ObjLoader {
         }
 
     }
+
+	public double getMaxDimen() {
+		double max = Math.max(getXWidth(),getYHeight());
+		return Math.max(max, getZDepth());
+	}
 
     public float getXWidth() {
         return rightpoint - leftpoint;

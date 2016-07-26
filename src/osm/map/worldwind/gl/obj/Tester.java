@@ -41,13 +41,13 @@ public class Tester extends ApplicationTemplate {
 			pos = Position.fromDegrees(35.77750,-120.80565,alt);
 
 //			this.renderable = new ObjRenderable(pos, model950, true, false);
-//			this.renderable = new ObjRenderable(pos, copter, false, true);
-			this.renderable = new ObjRenderable(pos, model550, false, false);
-//			this.renderable.setSize(100);
-			this.renderable.setSize(100);
+			this.renderable = new ObjRenderable(pos, copter, false, true);
+//			this.renderable = new ObjRenderable(pos, model550, false, false);
+//			this.renderable.setSize(100)100;
+			this.renderable.setSize(150);
+			this.renderable.setKeepConstantSize(false);
 //			this.renderable.setAzimuth(90);
 //			this.renderable.setRoll(90);
-			this.renderable.setKeepConstantSize(true);
 //			this.renderable.setElevation(-90);
 			this.renderable.setRenderDistance(50000);
 //            model.setYaw(55);
@@ -56,7 +56,7 @@ public class Tester extends ApplicationTemplate {
 
 			class MyBasicOrbitView extends BasicOrbitView {
 				public double computeNearClipDistance() {
-					return 1;
+					return .1;
 				}
 			};
 
