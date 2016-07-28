@@ -1,8 +1,11 @@
 package osm.map.worldwind.gl.obj;
 
 import gov.nasa.worldwind.avlist.AVKey;
+import gov.nasa.worldwind.event.SelectEvent;
+import gov.nasa.worldwind.event.SelectListener;
 import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.layers.*;
+import gov.nasa.worldwind.terrain.HighResolutionTerrain;
 import gov.nasa.worldwind.view.orbit.BasicOrbitView;
 import gov.nasa.worldwindx.examples.ApplicationTemplate;
 import static gov.nasa.worldwindx.examples.ApplicationTemplate.insertBeforeCompass;
@@ -38,10 +41,12 @@ public class Tester extends ApplicationTemplate {
 
 			layer = new RenderableLayer();
 //			pos = Position.fromDegrees(30, -100, alt);
+			HighResolutionTerrain hrt = new HighResolutionTerrain(this.getWwd().getModel().getGlobe(), 30.0);
 			pos = Position.fromDegrees(35.77750,-120.80565,alt);
+			pos = new Position(pos,hrt.getElevation(pos));
 
 //			this.renderable = new ObjRenderable(pos, model950, true, false);
-			this.renderable = new ObjRenderable(pos, copter, false, true);
+			this.renderable = new ObjRenderable(pos, copter, true, false);
 //			this.renderable = new ObjRenderable(pos, model550, false, false);
 //			this.renderable.setSize(100)100;
 			this.renderable.setSize(150);
@@ -52,6 +57,7 @@ public class Tester extends ApplicationTemplate {
 			this.renderable.setRenderDistance(50000);
 //            model.setYaw(55);
 			layer.addRenderable(this.renderable);
+			layer.setPickEnabled(true);
 			BasicOrbitView bv = (BasicOrbitView)this.getWwd().getView();
 
 			class MyBasicOrbitView extends BasicOrbitView {
@@ -78,7 +84,16 @@ public class Tester extends ApplicationTemplate {
 				}
 			});
 			timer.start();
+
+			this.wwjPanel.getWwd().addSelectListener(new SelectListener() {
+				@Override
+				public void selected(SelectEvent event) {
+					System.out.println(event.getTopObject());
+				}
+
+			});
 		}
+
 
 		private void gotoPos() {
 			this.getWwd().getView().goTo(pos, alt);

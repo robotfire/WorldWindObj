@@ -20,6 +20,7 @@ public class ObjLoader {
     int objectlist;
     float toppoint, bottompoint, leftpoint, rightpoint, farpoint, nearpoint;
     Map<String, Texture> textureCache = new HashMap<>();
+	BoundingBox bbox;
 
     String basePath;
     boolean flipTextureVertically;
@@ -38,12 +39,16 @@ public class ObjLoader {
 				cleanup();
 			}
             b_read1.close();
-
+			this.bbox = new BoundingBox( this.getXWidth(),this.getYHeight(), this.getZDepth(), this.bottompoint, centered);
         } catch (Exception e) {
             System.err.println("Error: could not load " + objPath);
             e.printStackTrace();
         }
     }
+
+	public BoundingBox getBoundingBox() {
+		return bbox;
+	}
 
     private void cleanup() {
         vertexSets.clear();
@@ -161,7 +166,8 @@ public class ObjLoader {
         for (int i = 0; i < vertexSets.size(); i++) {
             float coords[] = new float[4];
             coords[0] = (vertexSets.get(i))[0] - leftpoint - xshift;
-            coords[1] = (vertexSets.get(i))[1] - bottompoint - yshift;
+            //coords[1] = (vertexSets.get(i))[1] - bottompoint - yshift;
+            coords[1] = (vertexSets.get(i))[1] - bottompoint;
             coords[2] = (vertexSets.get(i))[2] - farpoint - zshift;
             vertexSets.set(i, coords);
         }
@@ -295,13 +301,17 @@ public class ObjLoader {
             this.v = v;
             this.vn = vn;
             this.vt = vt;
-            if (v.length == 3) {
-                polyType = GL2.GL_TRIANGLES;
-            } else if (v.length == 4) {
-                polyType = GL2.GL_QUADS;
-            } else {
-                polyType = GL2.GL_POLYGON;
-            }
+			switch (v.length) {
+				case 3:
+					polyType = GL2.GL_TRIANGLES;
+					break;
+				case 4:
+					polyType = GL2.GL_QUADS;
+					break;
+				default:
+					polyType = GL2.GL_POLYGON;
+					break;
+			}
             if (mtl.map_Kd != null) {
                 texture = getTexture(mtl.map_Kd);
             }

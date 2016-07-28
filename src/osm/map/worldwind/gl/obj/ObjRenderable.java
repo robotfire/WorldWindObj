@@ -16,6 +16,8 @@ public class ObjRenderable extends GLRenderable {
 	String modelSource;
 	boolean centerit = false, flipTextureVertically = false;
 
+	private String id;
+
 	public ObjRenderable(Position pos, String modelSource) {
 		super(pos);
 		this.modelSource = modelSource;
@@ -46,12 +48,20 @@ public class ObjRenderable extends GLRenderable {
 	protected void drawGL(DrawContext dc) {
 		GL2 gl = dc.getGL().getGL2();
 		gl.glRotated(90, 1, 0, 0);
-		getModel(dc).opengldraw(gl);
+		ObjLoader l = getModel(dc);
+		if (dc.isPickingMode()) {
+			l.getBoundingBox().drawUnitCube(dc);
+		} else {
+			getModel(dc).opengldraw(gl);
+			if (this.isHighlighted()) {
+				l.getBoundingBox().drawUnitCubeOutline(dc);
+			}
+		}
 	}
 
 	private double getPixelsPerMeter() {
 		int dpi = Toolkit.getDefaultToolkit().getScreenResolution();
-		return dpi/.0254;
+		return dpi / .0254;
 	}
 
 	@Override
@@ -70,12 +80,20 @@ public class ObjRenderable extends GLRenderable {
 		double modelSizeMeters = this.eyeDistanceOffset;
 		double modelPixels = modelSizeMeters / metersPerPixel;
 
-		double scale = size/modelPixels;
+		double scale = size / modelPixels;
 
-		if(scale < .5) {
+		if (scale < .5) {
 			scale = .5;
 		}
 		return scale;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 }

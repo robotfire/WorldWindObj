@@ -3,14 +3,21 @@ package osm.map.worldwind.gl;
 import gov.nasa.worldwind.geom.Angle;
 import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.geom.Vec4;
+import gov.nasa.worldwind.layers.Layer;
+import gov.nasa.worldwind.pick.PickSupport;
 
 import gov.nasa.worldwind.render.DrawContext;
+import gov.nasa.worldwind.render.Highlightable;
 import gov.nasa.worldwind.render.OrderedRenderable;
+import gov.nasa.worldwind.render.PreRenderable;
 import gov.nasa.worldwind.render.Renderable;
+import java.awt.Color;
 import java.awt.Point;
 import javax.media.opengl.GL2;
 
-public abstract class GLRenderable implements Renderable {
+public abstract class GLRenderable implements Renderable, PreRenderable, Highlightable {
+
+	protected Layer pickLayer;
 
 	protected Position position;
 	protected double azimuth = 0.0;
@@ -26,6 +33,9 @@ public abstract class GLRenderable implements Renderable {
 	protected double eyeDistance;
 	protected double eyeDistanceOffset = 0;
 	boolean drawnOnce = false;
+
+	protected PickSupport pickSupport = new PickSupport();
+	private boolean highlighted;
 
 	public GLRenderable(Position position) {
 		this.position = position;
@@ -58,7 +68,18 @@ public abstract class GLRenderable implements Renderable {
 		}
 
 		try {
+			if (dc.isPickingMode()) {
+				if (dc.getCurrentLayer() != null) {
+					this.pickLayer = dc.getCurrentLayer();
+				}
+			}
 			beginDraw(dc);
+			if (dc.isPickingMode()) {
+				GL2 gl = dc.getGL().getGL2();
+				Color pickColor = dc.getUniquePickColor();
+				pickSupport.addPickableObject(pickColor.getRGB(), this, this.position);
+				gl.glColor3ub((byte) pickColor.getRed(), (byte) pickColor.getGreen(), (byte) pickColor.getBlue());
+			}
 			draw(dc);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -108,7 +129,7 @@ public abstract class GLRenderable implements Renderable {
 			| GL2.GL_TRANSFORM_BIT
 			| GL2.GL_CLIENT_VERTEX_ARRAY_BIT);
 
-		if (useLighting) {
+		if (useLighting && !dc.isPickingMode()) {
 			gl.glEnable(GL2.GL_CULL_FACE);
 			gl.glEnable(GL2.GL_SMOOTH);
 			gl.glEnable(GL2.GL_LIGHTING);
@@ -138,8 +159,6 @@ public abstract class GLRenderable implements Renderable {
 		gl.glPopMatrix();
 		gl.glPopAttrib();
 	}
-
-
 
 	protected double computeSize(DrawContext dc, Vec4 loc) {
 		if (this.keepConstantSize) {
@@ -234,15 +253,40 @@ public abstract class GLRenderable implements Renderable {
 		}
 
 		@Override
-		public void pick(DrawContext dc, Point point) {
-			render(dc);
+		public void pick(DrawContext dc, Point pickPoint) {
+			pickSupport.clearPickList();
+			try {
+				pickSupport.beginPicking(dc);
+				GLRenderable.this.myRender(dc);
+			} finally {
+				pickSupport.endPicking(dc);
+				pickSupport.resolvePick(dc, pickPoint, pickLayer);
+			}
 		}
 
 		@Override
 		public void render(DrawContext dc) {
+
 			GLRenderable.this.myRender(dc);
 		}
 
+	}
+
+	public void preRender(DrawContext dc) {
+		if (dc.getCurrentLayer() != null) {
+			this.pickLayer = dc.getCurrentLayer();
+		}
+
+	}
+
+	@Override
+	public boolean isHighlighted() {
+		return this.highlighted;
+	}
+
+	@Override
+	public void setHighlighted(boolean highlighted) {
+		this.highlighted = highlighted;
 	}
 
 }
