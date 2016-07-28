@@ -26,9 +26,9 @@ public class Tester extends ApplicationTemplate {
 		public AppFrame() {
 
 			String f550="/models/f550/f550.obj";
-//            String ep3="C:/RaptorX/projects/models/ep3/ep3b.obj";
+//          String ep3="C:/RaptorX/projects/models/ep3/ep3b.obj";
 //			String copter = "C:/RaptorX/projects/DpacsPlugin/resources/models/copter.obj";
-			String copter = "/models/f950/copter.obj";
+			String copter = "/models/s900/copter.obj";
 
 			layer = new RenderableLayer();
 //			pos = Position.fromDegrees(30, -100, alt);
@@ -36,8 +36,8 @@ public class Tester extends ApplicationTemplate {
 			pos = Position.fromDegrees(35.77750,-120.80565,alt);
 			pos = new Position(pos,hrt.getElevation(pos));
 
-//			this.renderable = new ObjRenderable(pos, f550, true, false);
-			this.renderable = new ObjRenderable(pos, copter, true, false);
+			this.renderable = new ObjRenderable(pos, f550, true, false);
+//			this.renderable = new ObjRenderable(pos, copter, true, false);
 			this.renderable.setSize(250);
 			this.renderable.setKeepConstantSize(false);
 //			this.renderable.setAzimuth(90);
@@ -47,6 +47,7 @@ public class Tester extends ApplicationTemplate {
 //          model.setYaw(55);
 			layer.addRenderable(this.renderable);
 			layer.setPickEnabled(true);
+
 			BasicOrbitView bv = (BasicOrbitView)this.getWwd().getView();
 
 			class MyBasicOrbitView extends BasicOrbitView {

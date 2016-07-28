@@ -36,7 +36,7 @@ public class BoundingBox {
 		}
 		for (float row[] : v) {
 			row[0] = row[0] * dx;
-			row[1] = row[1] * dy - bottomPoint;
+			row[1] = (row[1]) * dy - bottomPoint;
 			row[2] = row[2] * dz;
 		}
 	}
@@ -52,7 +52,6 @@ public class BoundingBox {
 		gl.glColor3ub((byte) 255, (byte) 255, (byte) 0);
 		for (int[] face : faces) {
 			try {
-
 				gl.glBegin(GL2.GL_LINE_LOOP);
 				for (int j = 0; j < faces[0].length; j++) {
 					gl.glVertex3f(v[face[j]][0], v[face[j]][1], v[face[j]][2]);
