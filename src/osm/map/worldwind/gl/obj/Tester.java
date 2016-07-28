@@ -88,7 +88,7 @@ public class Tester extends ApplicationTemplate {
 			this.wwjPanel.getWwd().addSelectListener(new SelectListener() {
 				@Override
 				public void selected(SelectEvent event) {
-					System.out.println(event.getTopObject());
+//					System.out.println(event.getTopObject());
 				}
 
 			});
