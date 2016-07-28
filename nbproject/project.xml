@@ -6,6 +6,7 @@
             <name>WorldWindObj</name>
             <explicit-platform explicit-source-supported="true"/>
             <source-roots>
+                <root id="src.resources.dir"/>
                 <root id="src.src.dir" name="WorldWindObj"/>
             </source-roots>
             <test-roots>

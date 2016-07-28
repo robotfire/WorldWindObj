@@ -25,19 +25,10 @@ public class Tester extends ApplicationTemplate {
 
 		public AppFrame() {
 
-			//String model550="C:/RaptorX/projects/models/djif550mitGoPro/model.dae";
-			String model550="C:/RaptorX/projects/models/djif550mitGoPro/model/model.obj";
-			String model950="C:/RaptorX/projects/WorldWind-Ardor3D/ArdorModelLoader/models/obj/Hexa950modOBJ/Hexa950mod.obj";
-			String pitcher="C:/RaptorX/projects/WorldWind-Ardor3D/ArdorModelLoader/models/obj/pitcher.obj";
-            String modelep3="C:/RaptorX/projects/models/ep3/ep3b.obj";
-			//String copter = "C:/RaptorX/projects/models/copter/copter.obj";
-			String copter = "C:/RaptorX/projects/DpacsPlugin/resources/models/copter.obj";
-
-
-			String nimitz="C:/RaptorX/projects/models/digimation/NimitzCarrier.obj";
-//			String osprey="C:/RaptorX/projects/models/digimation/v22osprey.obj";
-//			String model950 = "C:/RaptorX/projects/models/Hexacopter Attack Drone/Hexa 950 mod 3DS/Hexa 950 mod.3DS";
-//			String model950 = "C:/RaptorX/projects/models/Hexacopter Attack Drone/3ds/hexa.3ds";
+			String f550="/models/f550/f550.obj";
+//            String ep3="C:/RaptorX/projects/models/ep3/ep3b.obj";
+//			String copter = "C:/RaptorX/projects/DpacsPlugin/resources/models/copter.obj";
+			String copter = "/models/f950/copter.obj";
 
 			layer = new RenderableLayer();
 //			pos = Position.fromDegrees(30, -100, alt);
@@ -45,17 +36,15 @@ public class Tester extends ApplicationTemplate {
 			pos = Position.fromDegrees(35.77750,-120.80565,alt);
 			pos = new Position(pos,hrt.getElevation(pos));
 
-//			this.renderable = new ObjRenderable(pos, model950, true, false);
+//			this.renderable = new ObjRenderable(pos, f550, true, false);
 			this.renderable = new ObjRenderable(pos, copter, true, false);
-//			this.renderable = new ObjRenderable(pos, model550, false, false);
-//			this.renderable.setSize(100)100;
-			this.renderable.setSize(150);
+			this.renderable.setSize(250);
 			this.renderable.setKeepConstantSize(false);
 //			this.renderable.setAzimuth(90);
 //			this.renderable.setRoll(90);
 //			this.renderable.setElevation(-90);
 			this.renderable.setRenderDistance(50000);
-//            model.setYaw(55);
+//          model.setYaw(55);
 			layer.addRenderable(this.renderable);
 			layer.setPickEnabled(true);
 			BasicOrbitView bv = (BasicOrbitView)this.getWwd().getView();
