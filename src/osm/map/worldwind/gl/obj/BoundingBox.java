@@ -42,8 +42,7 @@ public class BoundingBox {
 	}
 
 	protected void drawUnitCubeOutline(DrawContext dc) {
-		GL2 gl = dc.getGL().getGL2(); // GL initialization checks for GL2 compatibility.
-
+		GL2 gl = dc.getGL().getGL2();
 		gl.glLineWidth(2.5f);
 		gl.glColor3f(1.0f, 1.0f, 1.0f);
 		for (int[] face : faces) {
@@ -67,11 +66,10 @@ public class BoundingBox {
 	 * @param dz Z scale factor
 	 */
 	protected void drawUnitCube(DrawContext dc) {
-		// Vertices of a unit cube, centered on the origin.
 
 		// Note: draw the cube in OpenGL immediate mode for simplicity. Real applications should use vertex arrays
 		// or vertex buffer objects to achieve better performance.
-		GL2 gl = dc.getGL().getGL2(); // GL initialization checks for GL2 compatibility.
+		GL2 gl = dc.getGL().getGL2();
 		gl.glBegin(GL2.GL_QUADS);
 		try {
 			for (int i = 0; i < faces.length; i++) {
