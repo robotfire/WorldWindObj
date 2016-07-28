@@ -43,12 +43,15 @@ public class BoundingBox {
 
 	protected void drawUnitCubeOutline(DrawContext dc) {
 		GL2 gl = dc.getGL().getGL2();
-
 		gl.glLineWidth(4f);
 		gl.glEnable(GL2.GL_LINE_STIPPLE);
+		boolean lighting = gl.glIsEnabled(GL2.GL_LIGHTING);
+		if (lighting) {
+			gl.glDisable(GL2.GL_LIGHTING);
+		}
 		gl.glLineStipple(1, (short) 0x00FF);
-		gl.glColorMaterial(GL2.GL_FRONT_AND_BACK,GL2.GL_AMBIENT_AND_DIFFUSE);
-		gl.glEnable(GL2.GL_COLOR_MATERIAL);
+//		gl.glColorMaterial(GL2.GL_FRONT_AND_BACK,GL2.GL_AMBIENT_AND_DIFFUSE);
+//		gl.glEnable(GL2.GL_COLOR_MATERIAL);
 		gl.glColor3ub((byte) 255, (byte) 255, (byte) 0);
 		for (int[] face : faces) {
 			try {
@@ -61,7 +64,10 @@ public class BoundingBox {
 			}
 		}
 		gl.glDisable(GL2.GL_LINE_STIPPLE);
-		gl.glDisable(GL2.GL_COLOR_MATERIAL);
+//		gl.glDisable(GL2.GL_COLOR_MATERIAL);
+		if (lighting) {
+			gl.glEnable(GL2.GL_LIGHTING);
+		}
 	}
 
 	/**

@@ -16,16 +16,17 @@ import javax.swing.Timer;
 public class Tester extends ApplicationTemplate {
 
 	public static class AppFrame extends ApplicationTemplate.AppFrame {
+
 		Position pos;
 		RenderableLayer layer;
 		Timer timer;
 //		double alt = 180;
-		double alt =300;
+		double alt = 300;
 		private ObjRenderable renderable;
 
 		public AppFrame() {
 
-			String f550="/models/f550/f550.obj";
+			String f550 = "/models/f550/f550.obj";
 //          String ep3="C:/RaptorX/projects/models/ep3/ep3b.obj";
 //			String copter = "C:/RaptorX/projects/DpacsPlugin/resources/models/copter.obj";
 			String copter = "/models/s900/copter.obj";
@@ -33,8 +34,8 @@ public class Tester extends ApplicationTemplate {
 			layer = new RenderableLayer();
 //			pos = Position.fromDegrees(30, -100, alt);
 			HighResolutionTerrain hrt = new HighResolutionTerrain(this.getWwd().getModel().getGlobe(), 30.0);
-			pos = Position.fromDegrees(35.77750,-120.80565,alt);
-			pos = new Position(pos,hrt.getElevation(pos));
+			pos = Position.fromDegrees(35.77750, -120.80565, alt);
+			pos = new Position(pos, hrt.getElevation(pos));
 
 			this.renderable = new ObjRenderable(pos, f550, true, false);
 //			this.renderable = new ObjRenderable(pos, copter, true, false);
@@ -48,9 +49,10 @@ public class Tester extends ApplicationTemplate {
 			layer.addRenderable(this.renderable);
 			layer.setPickEnabled(true);
 
-			BasicOrbitView bv = (BasicOrbitView)this.getWwd().getView();
+			BasicOrbitView bv = (BasicOrbitView) this.getWwd().getView();
 
 			class MyBasicOrbitView extends BasicOrbitView {
+
 				public double computeNearClipDistance() {
 					return .1;
 				}
@@ -63,11 +65,12 @@ public class Tester extends ApplicationTemplate {
 
 			this.timer = new Timer(1000, new ActionListener() {
 				boolean first = true;
+
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					if(first) {
-						gotoPos();											
-						first =false;
+					if (first) {
+						gotoPos();
+						first = false;
 					} else {
 						updatePosition();
 					}
@@ -84,7 +87,6 @@ public class Tester extends ApplicationTemplate {
 			});
 		}
 
-
 		private void gotoPos() {
 			this.getWwd().getView().goTo(pos, alt);
 		}
@@ -99,11 +101,10 @@ public class Tester extends ApplicationTemplate {
 //			model.setRoll(model.getRoll()+45);
 //			model.setPitch(model.getPitch()+45);
 //			model.setPitch(model.getPitch()+(Math.random()-.5)*5);
-			layer.firePropertyChange(AVKey.LAYER,null,this);
+			layer.firePropertyChange(AVKey.LAYER, null, this);
 			//this.getWwd().redraw();
 //			timer.stop();
 		}
-
 
 		protected RenderableLayer getLayer() {
 			for (Layer layer : getWwd().getModel().getLayers()) {
