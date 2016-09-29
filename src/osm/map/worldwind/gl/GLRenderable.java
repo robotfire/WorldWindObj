@@ -1,8 +1,12 @@
 package osm.map.worldwind.gl;
 
+import gov.nasa.worldwind.Movable;
+import gov.nasa.worldwind.Movable2;
 import gov.nasa.worldwind.geom.Angle;
+import gov.nasa.worldwind.geom.LatLon;
 import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.geom.Vec4;
+import gov.nasa.worldwind.globes.Globe;
 import gov.nasa.worldwind.layers.Layer;
 import gov.nasa.worldwind.pick.PickSupport;
 
@@ -15,7 +19,7 @@ import java.awt.Color;
 import java.awt.Point;
 import javax.media.opengl.GL2;
 
-public abstract class GLRenderable implements Renderable, PreRenderable, Highlightable {
+public abstract class GLRenderable implements Renderable, PreRenderable, Highlightable, Movable, Movable2 {
 
 	protected Layer pickLayer;
 
@@ -272,6 +276,7 @@ public abstract class GLRenderable implements Renderable, PreRenderable, Highlig
 
 	}
 
+	@Override
 	public void preRender(DrawContext dc) {
 		if (dc.getCurrentLayer() != null) {
 			this.pickLayer = dc.getCurrentLayer();
@@ -287,6 +292,36 @@ public abstract class GLRenderable implements Renderable, PreRenderable, Highlig
 	@Override
 	public void setHighlighted(boolean highlighted) {
 		this.highlighted = highlighted;
+	}
+
+	@Override
+	public Position getReferencePosition() {
+		return this.position;
+	}
+
+	@Override
+	public void move(Position position) {
+        Angle heading = LatLon.greatCircleAzimuth(this.getReferencePosition(),position);
+        Angle pathLength = LatLon.greatCircleDistance(this.getReferencePosition(), position);
+        this.position = new Position(LatLon.greatCircleEndPosition(this.position, heading, pathLength),this.position.elevation);
+    }
+
+    protected void doMoveTo(Globe globe, Position oldReferencePosition, Position newReferencePosition) {
+//        List<LatLon> locations = new ArrayList<LatLon>(1);
+//        locations.add(this.getCenter());
+//        List<LatLon> newLocations = LatLon.computeShiftedLocations(globe, oldReferencePosition, newReferencePosition,locations); 
+//        this.setCenter(newLocations.get(0));
+		this.position = new Position(newReferencePosition,this.position.getElevation());
+	}
+
+	@Override
+	public void moveTo(Position position) {
+		this.position = position;
+	}
+
+	@Override
+	public void moveTo(Globe globe, Position position) {
+		this.position = new Position(position,this.position.getElevation());
 	}
 
 }
