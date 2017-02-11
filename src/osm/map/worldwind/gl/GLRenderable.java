@@ -2,6 +2,9 @@ package osm.map.worldwind.gl;
 
 import gov.nasa.worldwind.Movable;
 import gov.nasa.worldwind.Movable2;
+import gov.nasa.worldwind.avlist.AVKey;
+import gov.nasa.worldwind.drag.DragContext;
+import gov.nasa.worldwind.drag.Draggable;
 import gov.nasa.worldwind.geom.Angle;
 import gov.nasa.worldwind.geom.LatLon;
 import gov.nasa.worldwind.geom.Position;
@@ -17,9 +20,10 @@ import gov.nasa.worldwind.render.PreRenderable;
 import gov.nasa.worldwind.render.Renderable;
 import java.awt.Color;
 import java.awt.Point;
+import java.beans.PropertyChangeSupport;
 import javax.media.opengl.GL2;
 
-public abstract class GLRenderable implements Renderable, PreRenderable, Highlightable, Movable, Movable2 {
+public abstract class GLRenderable implements Renderable, PreRenderable, Highlightable, Movable, Movable2, Draggable {
 
 	protected Layer pickLayer;
 
@@ -27,7 +31,7 @@ public abstract class GLRenderable implements Renderable, PreRenderable, Highlig
 	protected double azimuth = 0.0;
 	protected double roll = 0.0;
 	protected double elevation = 0.0;
-	protected double renderDistance = 50000; //do not draw if object is this far from eye
+	protected double renderDistance = 500000; //do not draw if object is this far from eye
 	protected boolean keepConstantSize = true;
 	protected double size = 1;
 	protected boolean clamp = false;
@@ -37,9 +41,14 @@ public abstract class GLRenderable implements Renderable, PreRenderable, Highlig
 	protected double eyeDistance;
 	protected double eyeDistanceOffset = 0;
 	boolean drawnOnce = false;
+	protected boolean dragEnabled = false;
+	protected DragContext dragContext;
 
 	protected PickSupport pickSupport = new PickSupport();
 	private boolean highlighted;
+
+	private PropertyChangeSupport pcl = new PropertyChangeSupport(this);
+	public final static String POSITION = "Position";
 
 	public GLRenderable(Position position) {
 		this.position = position;
@@ -210,7 +219,7 @@ public abstract class GLRenderable implements Renderable, PreRenderable, Highlig
 	}
 
 	public void setPosition(Position position) {
-		this.position = position;
+		this.pcl.firePropertyChange(POSITION, this.position, this.position = position);
 	}
 
 	public double getAzimuth() {
@@ -247,6 +256,44 @@ public abstract class GLRenderable implements Renderable, PreRenderable, Highlig
 
 	public void setRenderDistance(double renderDistance) {
 		this.renderDistance = renderDistance;
+	}
+
+	@Override
+	public boolean isDragEnabled() {
+		return dragEnabled;
+	}
+
+	@Override
+	public void setDragEnabled(boolean enabled) {
+		this.dragEnabled = enabled;
+	}
+
+	@Override
+	public void drag(DragContext dragContext) {
+		this.dragContext = dragContext;
+		if (dragContext.getDragState().equals(AVKey.DRAG_BEGIN)) {
+			this.setDragEnabled(true);
+		}
+		if (dragContext.getDragState().equals(AVKey.DRAG_ENDED)) {
+			this.setDragEnabled(false);
+		}
+		if (dragEnabled) {
+			if (this.dragContext.getDragState().equals(AVKey.DRAG_CHANGE)) {
+				Point pt = dragContext.getPoint();
+//				dragContext.getGlobe()
+				Position currentPosition = dragContext.getView().computePositionFromScreenPoint(pt.x, pt.y);
+				if (currentPosition != null) {
+					double alt = this.getElevation();
+					double terrainAlt = dragContext.getGlobe().getElevation(currentPosition.latitude, currentPosition.longitude);
+					if (alt <= 0) {
+						alt = terrainAlt;
+					}
+					Position newPosition = new Position(currentPosition, alt);
+					this.setPosition(newPosition);
+				}
+			}
+		}
+
 	}
 
 	public class OrderedGLRenderable implements OrderedRenderable {
@@ -301,17 +348,17 @@ public abstract class GLRenderable implements Renderable, PreRenderable, Highlig
 
 	@Override
 	public void move(Position position) {
-        Angle heading = LatLon.greatCircleAzimuth(this.getReferencePosition(),position);
-        Angle pathLength = LatLon.greatCircleDistance(this.getReferencePosition(), position);
-        this.position = new Position(LatLon.greatCircleEndPosition(this.position, heading, pathLength),this.position.elevation);
-    }
+		Angle heading = LatLon.greatCircleAzimuth(this.getReferencePosition(), position);
+		Angle pathLength = LatLon.greatCircleDistance(this.getReferencePosition(), position);
+		this.position = new Position(LatLon.greatCircleEndPosition(this.position, heading, pathLength), this.position.elevation);
+	}
 
-    protected void doMoveTo(Globe globe, Position oldReferencePosition, Position newReferencePosition) {
+	protected void doMoveTo(Globe globe, Position oldReferencePosition, Position newReferencePosition) {
 //        List<LatLon> locations = new ArrayList<LatLon>(1);
 //        locations.add(this.getCenter());
 //        List<LatLon> newLocations = LatLon.computeShiftedLocations(globe, oldReferencePosition, newReferencePosition,locations); 
 //        this.setCenter(newLocations.get(0));
-		this.position = new Position(newReferencePosition,this.position.getElevation());
+		this.position = new Position(newReferencePosition, this.position.getElevation());
 	}
 
 	@Override
@@ -321,7 +368,10 @@ public abstract class GLRenderable implements Renderable, PreRenderable, Highlig
 
 	@Override
 	public void moveTo(Globe globe, Position position) {
-		this.position = new Position(position,this.position.getElevation());
+		this.position = new Position(position, this.position.getElevation());
 	}
 
+	public PropertyChangeSupport getPropertyChangeSupport() {
+		return this.pcl;
+	}
 }

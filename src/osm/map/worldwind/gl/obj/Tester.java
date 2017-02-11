@@ -37,14 +37,14 @@ public class Tester extends ApplicationTemplate {
 			pos = Position.fromDegrees(35.77750, -120.80565, alt);
 			pos = new Position(pos, hrt.getElevation(pos));
 
-			this.renderable = new ObjRenderable(pos, f550, true, false);
-//			this.renderable = new ObjRenderable(pos, copter, true, false);
+//			this.renderable = new ObjRenderable(pos, f550, true, false);
+			this.renderable = new ObjRenderable(pos, copter, true, false);
 			this.renderable.setSize(250);
 			this.renderable.setKeepConstantSize(false);
 //			this.renderable.setAzimuth(90);
 //			this.renderable.setRoll(90);
 //			this.renderable.setElevation(-90);
-			this.renderable.setRenderDistance(50000);
+			this.renderable.setRenderDistance(1000);
 //          model.setYaw(55);
 			layer.addRenderable(this.renderable);
 			layer.setPickEnabled(true);
