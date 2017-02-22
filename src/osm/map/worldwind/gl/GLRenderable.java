@@ -283,7 +283,7 @@ public abstract class GLRenderable implements Renderable, PreRenderable, Highlig
 //				dragContext.getGlobe()
 				Position currentPosition = dragContext.getView().computePositionFromScreenPoint(pt.x, pt.y);
 				if (currentPosition != null) {
-					double alt = this.getElevation();
+					double alt = this.getPosition().getAltitude();
 					double terrainAlt = dragContext.getGlobe().getElevation(currentPosition.latitude, currentPosition.longitude);
 					if (alt <= 0) {
 						alt = terrainAlt;
