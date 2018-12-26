@@ -143,9 +143,18 @@ public class ObjLoader {
                                 vn[i] = 0;
                             }
                         }
-                        faces.add(new Face(mtlLoader.getMtl(mtlID), v, vn, vt));
+                        if (mtlLoader == null) {
+                            MtlLoader.Material mat = new MtlLoader.Material();
+                            mat.name = "default";
+                            faces.add(new Face(mat, v, vn, vt));
+
+                        } else {
+                            faces.add(new Face(mtlLoader.getMtl(mtlID), v, vn, vt));
+                        }
+
                     } else if (newline.startsWith("mtllib")) { //Loads materials
                         mtlLoader = new MtlLoader(basePath, newline.substring(newline.indexOf(" ")).trim());
+
                     } else if (newline.startsWith("usemtl")) { //Uses materials
                         mtlID = newline.split("\\s+")[1];
                     }
@@ -205,6 +214,7 @@ public class ObjLoader {
                         texture = null;
                         lastMapKd = "";
                     }
+                    
                 } else if (!lastMapKd.equals(mtl.map_Kd.toString())) { //yes texture, and it changed?
                     if (texture != null) {
                         texture.disable(gl);
@@ -314,13 +324,17 @@ public class ObjLoader {
             } else if (this.mtl.d < face.mtl.d) {
                 return 1;
             }
-            
+
             if (this.texture == null && face.texture != null) { //draw non-textured faces first
                 return -1;
+                
             } else if (this.texture != null && face.texture == null) {
                 return 1;
+                
             } else if (this.texture != null && face.texture != null) { //order by texture name
-                return this.mtl.map_Kd.compareTo(face.mtl.map_Kd);
+                if (this.mtl.map_Kd != null) {
+                    return this.mtl.map_Kd.compareTo(face.mtl.map_Kd);
+                }
             }
             return this.mtl.name.compareTo(face.mtl.name); //order by mtl name
         }

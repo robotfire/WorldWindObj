@@ -56,7 +56,6 @@ public abstract class GLRenderable implements Renderable {
         if (eyeDistance > renderDistance) {
             return;
         }
-
         try {
             beginDraw(dc);
             draw(dc);
@@ -78,7 +77,7 @@ public abstract class GLRenderable implements Renderable {
         }
         double localSize = this.computeSize(dc, loc);
 
-        if (dc.getView().getFrustumInModelCoordinates().contains(loc)) {
+        // if (dc.getView().getFrustumInModelCoordinates().contains(loc)) {
             dc.getView().pushReferenceCenter(dc, loc);
             gl.glRotated(position.getLongitude().degrees, 0, 1, 0);
             gl.glRotated(-position.getLatitude().degrees, 1, 0, 0);
@@ -88,7 +87,7 @@ public abstract class GLRenderable implements Renderable {
             gl.glScaled(localSize, localSize, localSize);
             drawGL(dc);
             dc.getView().popReferenceCenter(dc);
-        }
+        // }
     }
 
     protected abstract void drawGL(DrawContext dc);

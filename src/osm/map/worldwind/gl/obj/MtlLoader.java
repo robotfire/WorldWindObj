@@ -115,7 +115,7 @@ public class MtlLoader {
         }
     }
 
-    public class Material {
+    public static class Material {
 
         public String name;
         public int mtlnum;

@@ -43,7 +43,8 @@ public class ObjRenderable extends GLRenderable {
     @Override
     protected void drawGL(DrawContext dc) {
         GL2 gl = dc.getGL().getGL2();
-        gl.glRotated(90, 1, 0, 0);
+        // gl.glRotated(180, 1, 0, 0);
+        // gl.glRotated(180, 0, 0, 1);
         getModel(dc).opengldraw(gl);
     }
 
