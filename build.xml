@@ -70,4 +70,33 @@
     nbproject/build-impl.xml file. 
 
     -->
+    <target name="-post-jar" description="Create all jars">
+        <antcall target="deploy_libs"/>
+        
+        
+    </target>
+    
+    <target name="-pre-compile">
+        <antcall target="update_libs"/>
+        
+    </target>
+    
+    <!-- If the TinyRCP project is available use it to get the latest version -->
+    <target name="update_libs">
+        <echo message="Update libs from WorldWind project"/>
+        <copy failonerror="false" todir="lib/worldwind" overwrite="true">
+            <fileset file="../../Idea/WorldWindJava/build/jar/release/worldwind.jar"/>
+            <fileset file="../../Idea/WorldWindJava/build/jar/release/worldwindx.jar"/>
+            <fileset file="../../Idea/WorldWindJava/gdal.jar"/>
+            <fileset file="../../Idea/WorldWindJava/jogl*.jar"/>
+            <fileset file="../../Idea/WorldWindJava/gluegen-rt*.jar"/>
+        </copy>
+    </target>
+    
+    <target name="deploy_libs">
+        <copy todir="../JWorldWindEarth/lib">
+            <fileset file="dist/WorldWindObj.jar"/>
+        </copy>
+    </target>
+
 </project>

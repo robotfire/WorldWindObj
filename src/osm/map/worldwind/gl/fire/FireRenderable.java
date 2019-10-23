@@ -4,7 +4,7 @@ import gov.nasa.worldwind.geom.*;
 import gov.nasa.worldwind.render.*;
 
 import java.awt.*;
-import javax.media.opengl.GL2;
+import com.jogamp.opengl.GL2;
 import osm.map.worldwind.gl.GLRenderable;
 
 public class FireRenderable extends GLRenderable {

@@ -1,7 +1,9 @@
 package osm.map.worldwind.gl.obj;
 
+import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureIO;
+import gov.nasa.worldwind.render.Box;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,7 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-import javax.media.opengl.GL2;
 import osm.map.worldwind.gl.obj.MtlLoader.Material;
 
 public class ObjLoader {
@@ -22,15 +23,19 @@ public class ObjLoader {
     float toppoint, bottompoint, leftpoint, rightpoint, farpoint, nearpoint;
     Map<String, Texture> textureCache = new HashMap<String, Texture>();
 
+    //--- Bounding box
+    Box box = null;
+
     String basePath;
     boolean flipTextureVertically;
 
-    public ObjLoader(String objPath, GL2 gl, boolean centered, boolean flipTextureVertically) {
+    public ObjLoader(String objPath, GL2 gl, boolean centered, boolean flipTextureVertically, ObjLoaderProgressListener listener) {
         this.flipTextureVertically = flipTextureVertically;
         try {
             basePath = new File(objPath).getParent().toString();
             FileInputStream r_path1 = new FileInputStream(objPath);
             BufferedReader b_read1 = new BufferedReader(new InputStreamReader(r_path1));
+            if (listener != null) listener.objLoading(basePath, "Parsing file");
             loadObject(b_read1);
             if (centered) {
                 centerit();
@@ -39,10 +44,12 @@ public class ObjLoader {
             cleanup();
             r_path1.close();
             b_read1.close();
+            if (listener != null) listener.objLoaded(objPath, "Loaded");
 
         } catch (Exception e) {
             System.err.println("Error: could not load " + objPath);
             e.printStackTrace();
+            if (listener != null) listener.objLoadingFailed(objPath, e.getMessage());
         }
     }
 
@@ -150,6 +157,7 @@ public class ObjLoader {
 
                         } else {
                             faces.add(new Face(mtlLoader.getMtl(mtlID), v, vn, vt));
+
                         }
 
                     } else if (newline.startsWith("mtllib")) { //Loads materials
@@ -214,7 +222,7 @@ public class ObjLoader {
                         texture = null;
                         lastMapKd = "";
                     }
-                    
+
                 } else if (!lastMapKd.equals(mtl.map_Kd.toString())) { //yes texture, and it changed?
                     if (texture != null) {
                         texture.disable(gl);
@@ -327,10 +335,10 @@ public class ObjLoader {
 
             if (this.texture == null && face.texture != null) { //draw non-textured faces first
                 return -1;
-                
+
             } else if (this.texture != null && face.texture == null) {
                 return 1;
-                
+
             } else if (this.texture != null && face.texture != null) { //order by texture name
                 if (this.mtl.map_Kd != null) {
                     return this.mtl.map_Kd.compareTo(face.mtl.map_Kd);
