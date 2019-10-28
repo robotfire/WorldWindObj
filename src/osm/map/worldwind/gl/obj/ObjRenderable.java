@@ -1,50 +1,57 @@
 package osm.map.worldwind.gl.obj;
 
+import com.jogamp.opengl.GL2;
 import gov.nasa.worldwind.geom.Position;
 
 import gov.nasa.worldwind.render.DrawContext;
-import java.util.HashMap;
-import java.util.Map;
-import javax.media.opengl.GL2;
 import osm.map.worldwind.gl.GLRenderable;
 
 public class ObjRenderable extends GLRenderable {
 
-    static Map<String, ObjLoader> modelCache = new HashMap<String, ObjLoader>();
+    ObjLoader loader = null;
     String modelSource;
-    boolean centerit = false, flipTextureVertically = false;
+    boolean centerit = false;
+    boolean flipTextureVertically = false;
+    ObjLoaderProgressListener listener = null;
 
-    public ObjRenderable(Position pos, String modelSource) {
+    public ObjRenderable(Position pos, String modelSource, ObjLoaderProgressListener listener) {
         super(pos);
         this.modelSource = modelSource;
+        this.listener = listener;
     }
-    
-    public ObjRenderable(Position pos, String modelSource, boolean centerit, boolean flipTextureVertically) {
+
+    public ObjRenderable(Position pos, String modelSource, boolean centerit, boolean flipTextureVertically, ObjLoaderProgressListener listener) {
         super(pos);
         this.modelSource = modelSource;
         this.centerit = centerit;
         this.flipTextureVertically = flipTextureVertically;
+        this.listener = listener;
     }
 
-    protected ObjLoader getModel(final DrawContext dc) {
-        String key = modelSource + "#" + dc.hashCode();
-        if (modelCache.get(key) == null) {
-            modelCache.put(key, new ObjLoader(modelSource, dc.getGL().getGL2(), centerit, flipTextureVertically));
-        }
-        ObjLoader model = modelCache.get(key);
-        eyeDistanceOffset = Math.max(Math.max(model.getXWidth(), model.getYHeight()), model.getZDepth());
-        return modelCache.get(key);
+    //**************************************************************************
+    //*** API
+    //**************************************************************************
+    public ObjLoader getLoader() {
+        return loader;
     }
     
-    public static void reload() {
-        modelCache.clear();
-    }
-
+    
+    //**************************************************************************
+    //*** GLRenderable
+    //**************************************************************************
     @Override
     protected void drawGL(DrawContext dc) {
         GL2 gl = dc.getGL().getGL2();
-        gl.glRotated(90, 1, 0, 0);
-        getModel(dc).opengldraw(gl);
+        // gl.glRotated(180, 1, 0, 0);
+        // gl.glRotated(180, 0, 0, 1);
+        
+        //--- Loading conmplex objects will freeze the event thread
+        if (loader == null) loader = new ObjLoader(modelSource, dc.getGL().getGL2(), centerit, flipTextureVertically, listener);
+           
+        eyeDistanceOffset = Math.max(Math.max(loader.getXWidth(), loader.getYHeight()), loader.getZDepth());
+            
+        loader.opengldraw(gl);
+
     }
 
 }
